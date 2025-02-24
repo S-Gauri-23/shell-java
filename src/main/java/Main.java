@@ -9,8 +9,13 @@ public class Main {
             System.out.print("$ ");
             String input = scanner.nextLine();
 
+            //checks if client wants to exit
             if(input.equals("exit 0")) break;
-            else {
+
+            //checks if client wants to print some thing
+            else if (input.startsWith("echo")) {
+                System.out.println(input.substring(5));
+            } else {
                 System.out.println(input + ": command not found");
             }
          }
