@@ -57,8 +57,12 @@ public class Main {
 
                 case "cd":{
                     String newDirectory = arguments[0];
+
+                    // Storing the new directory path in a File object
                     File directory = new File(newDirectory);
 
+                    // Check if the directory exists and is a valid directory
+                    // then change the directory
                     if(directory.exists() && directory.isDirectory()){
                         System.setProperty("user.dir", newDirectory);
                     }
