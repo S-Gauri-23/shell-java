@@ -2,7 +2,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -53,6 +52,12 @@ public class Main {
                 case "pwd":{
                     String currentDir = System.getProperty("user.dir");
                     System.out.println(currentDir);
+                    break;
+                }
+
+                case "cd":{
+                    String newDirectory = arguments[0];
+                    System.setProperty("user.dir", newDirectory);
                     break;
                 }
 
@@ -113,9 +118,4 @@ public class Main {
             Thread.currentThread().interrupt();
         }
     }
-
-    // private static String getWorkingDirectory() {
-    //     String path = Paths.get("").toAbsolutePath().toString();
-    //     return path;
-    // }
 }
