@@ -8,7 +8,7 @@ public class Main {
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
-        Set<String> commands = Set.of("echo", "exit", "type", "ls", "cat");
+        Set<String> commands = Set.of("cd", "dir", "echo", "exit", "set", "cls", "copy", "del", "move", "ren", "pause", "title", "help");
 
         while (true) {
             System.out.print("$ ");
@@ -33,14 +33,20 @@ public class Main {
                 }
 
                 case "type":{
-                        String path = getPath(argument);
-    
-                        if (path != null) {
-                            System.out.println(argument + " is " + path);
-                        } else {
-                            System.out.println(argument + ": not found");
+
+                        if(commands.contains(argument)){
+                            System.out.println(argument + "is a builtin");
+                            break;
                         }
-                    break;
+                        else{
+                            String path = getPath(argument);
+                            if (path != null) {
+                                System.out.println(argument + " is " + path);
+                            } else {
+                                System.out.println(argument + ": not found");
+                            }
+                            break;
+                        }
                 }
                 default:{
                     System.out.println(command + ": command not found");
