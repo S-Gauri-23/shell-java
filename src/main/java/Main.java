@@ -51,7 +51,8 @@ public class Main {
                 }
 
                 case "pwd":{
-                    getWorkingDirectory();
+                    String currentDir = System.getProperty("user.dir");
+                    System.out.println(currentDir);
                     break;
                 }
 
@@ -113,8 +114,8 @@ public class Main {
         }
     }
 
-    private static String getWorkingDirectory() {
-        String path = Paths.get("").toAbsolutePath().toString();
-        return path;
-    }
+    // private static String getWorkingDirectory() {
+    //     String path = Paths.get("").toAbsolutePath().toString();
+    //     return path;
+    // }
 }
