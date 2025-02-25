@@ -57,7 +57,14 @@ public class Main {
 
                 case "cd":{
                     String newDirectory = arguments[0];
-                    System.setProperty("user.dir", newDirectory);
+                    File directory = new File(newDirectory);
+                    
+                    if(directory.exists() && directory.isDirectory()){
+                        System.setProperty("user.dir", newDirectory);
+                    }
+                    else{
+                        System.out.println(command + ": " + directory + ": No such file or directory");
+                    }
                     break;
                 }
 
