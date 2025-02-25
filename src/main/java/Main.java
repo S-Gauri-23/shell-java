@@ -88,7 +88,7 @@ public class Main {
         try {
             // Construct full command with arguments
             String[] fullCommand = new String[args.length + 1];
-            fullCommand[0] = path; // Use full path instead of just the command
+            fullCommand[0] = command; // Use full path instead of just the command
             System.arraycopy(args, 0, fullCommand, 1, args.length);
     
             // Execute the command
