@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -41,12 +42,17 @@ public class Main {
                         String path = getPath(arguments[0]);
                         if (path != null) {
                             System.out.println(arguments[0] + " is " + path);
-                        } 
+                        }
                         else {
                             System.out.println(arguments[0] + ": not found");
                         }
                         break;
                     }
+                }
+
+                case "pwd":{
+                    getWorkingDirectory();
+                    break;
                 }
 
                 default:{
@@ -105,5 +111,10 @@ public class Main {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
+    }
+
+    private static String getWorkingDirectory() {
+        String path = Paths.get("").toAbsolutePath().toString();
+        return path;
     }
 }
