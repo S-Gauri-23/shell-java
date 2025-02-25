@@ -35,14 +35,15 @@ public class Main {
                 case "type":{
 
                         if(commands.contains(argument)){
-                            System.out.println(argument + "is a builtin");
+                            System.out.println(argument + " is a shell builtin");
                             break;
                         }
                         else{
                             String path = getPath(argument);
                             if (path != null) {
                                 System.out.println(argument + " is " + path);
-                            } else {
+                            } 
+                            else {
                                 System.out.println(argument + ": not found");
                             }
                             break;
