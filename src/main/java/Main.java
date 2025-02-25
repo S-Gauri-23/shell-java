@@ -22,7 +22,6 @@ public class Main {
 
             switch(command){
                 case "exit":{
-                    System.out.println("Exiting the program");
                     scanner.close();
                     return;
                 }
