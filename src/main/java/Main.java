@@ -33,7 +33,6 @@ public class Main {
                 }
 
                 case "type":{
-                    if (commands.contains(argument)) {
                         String path = getPath(argument);
     
                         if (path != null) {
@@ -41,7 +40,6 @@ public class Main {
                         } else {
                             System.out.println(argument + ": not found");
                         }
-                    }
                     break;
                 }
                 default:{
