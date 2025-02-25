@@ -58,7 +58,7 @@ public class Main {
                 case "cd":{
                     String newDirectory = arguments[0];
                     File directory = new File(newDirectory);
-                    
+
                     if(directory.exists() && directory.isDirectory()){
                         System.setProperty("user.dir", newDirectory);
                     }
@@ -82,8 +82,10 @@ public class Main {
         String[] extensions = {"", ".exe", ".bat", ".cmd"};
 
         for (String path : paths) {
+            if (path.isBlank()) continue;
+
             for (String ext : extensions) {
-                Path fullPath = Path.of(path, parameter + ext);      
+                Path fullPath = Path.of(path.trim(), parameter + ext);      
                 if (Files.isRegularFile(fullPath) && Files.isExecutable(fullPath)) {
                     return fullPath.toString();
                 }
