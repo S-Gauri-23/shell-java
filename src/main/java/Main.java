@@ -89,11 +89,11 @@ public class Main {
         String[] extensions = {"", ".exe", ".bat", ".cmd"};
 
         for (String path : paths) {
-            if (path.isBlank()) continue;
+            if (path == null || path.isBlank()) continue;
 
             for (String ext : extensions) {
                 Path fullPath = Path.of(path.trim(), parameter + ext);      
-                if (Files.isRegularFile(fullPath) && Files.isExecutable(fullPath)) {
+                if (Files.exists(fullPath) && Files.isRegularFile(fullPath) && Files.isExecutable(fullPath)) {
                     return fullPath.toString();
                 }
             }
