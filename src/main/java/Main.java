@@ -57,9 +57,15 @@ public class Main {
                 }
 
                 case "cd":{
+                    // getting the actual HOME directory
+                    String homeDir = System.getenv("HOME");
+                    if(homeDir == null){
+                        homeDir = System.getProperty("user.home");
+                    }
+
                     // Navigate to user's home directory
                     if(arguments.length == 0 || arguments[0].equals("~")){
-                        System.setProperty("user.dir" , System.getProperty("user.home"));
+                        System.setProperty("user.dir", homeDir);
                         break;
                     }
                     else{
