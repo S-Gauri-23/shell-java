@@ -57,22 +57,30 @@ public class Main {
                 }
 
                 case "cd":{
-                    // Get current working directory
-                    Path currentDir = Path.of(System.getProperty("user.dir"));
-
-                    // Resolve relative or absolute path correctly
-                    Path newPath = currentDir.resolve(arguments[0]).normalize();
-
-                    // Check if the directory exists and is a valid directory
-                    // then change the directory
-                    if(!Files.exists(newPath) || !Files.isDirectory(newPath)){
-                        System.out.println(command + ": " + arguments[0] + ": No such file or directory");
+                    // Navigate to user's home directory
+                    if(arguments.length == 0 || arguments[0].equals("~")){
+                        System.setProperty("user.dir" , System.getProperty("user.home"));
                         break;
                     }
+                    else{
 
-                    // update working directory
-                    System.setProperty("user.dir", newPath.toString());
-                    break;
+                        // Get current working directory
+                        Path currentDir = Path.of(System.getProperty("user.dir"));
+
+                        // Resolve relative or absolute path correctly
+                        Path newPath = currentDir.resolve(arguments[0]).normalize();
+
+                        // Check if the directory exists and is a valid directory
+                        // then change the directory
+                        if(!Files.exists(newPath) || !Files.isDirectory(newPath)){
+                            System.out.println(command + ": " + arguments[0] + ": No such file or directory");
+                            break;
+                        }
+
+                        // update working directory
+                        System.setProperty("user.dir", newPath.toString());
+                        break;
+                    }
                 }
 
                 default:{
