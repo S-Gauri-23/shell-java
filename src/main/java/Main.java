@@ -33,7 +33,6 @@ public class Main {
                     if(inputText.startsWith("'") && inputText.endsWith("'")){
                         System.out.println(inputText.substring(1, inputText.length()-1));
                     }
-                    System.out.println();
                     break;
                 }
 
