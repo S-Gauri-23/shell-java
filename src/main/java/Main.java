@@ -2,7 +2,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.text.Normalizer;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -29,7 +29,11 @@ public class Main {
                 }
 
                 case "echo":{
-                    System.out.println(String.join(" ", arguments));
+                    String inputText = input.substring(5);
+                    if(inputText.startsWith("'") && inputText.endsWith("'")){
+                        System.out.println(inputText.substring(1, inputText.length()-1));
+                    }
+                    System.out.println();
                     break;
                 }
 
@@ -53,6 +57,28 @@ public class Main {
                 case "pwd":{
                     String currentDir = System.getProperty("user.dir");
                     System.out.println(currentDir);
+                    break;
+                }
+
+                case "cat":{
+                
+                    for (String fileName : arguments) {
+                        Path filePath = Path.of(System.getProperty("user.dir"), fileName);
+                
+                        if (!Files.exists(filePath)) {
+                            System.out.println("cat: " + fileName + ": No such file or directory");
+                            continue;
+                        }
+                
+                        try {
+                            List<String> lines = Files.readAllLines(filePath);
+                            for (String line : lines) {
+                                System.out.println(line);
+                            }
+                        } catch (IOException e) {
+                            System.out.println("cat: " + fileName + ": Error reading file");
+                        }
+                    }
                     break;
                 }
 
