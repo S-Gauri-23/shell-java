@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.Normalizer;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -56,20 +57,21 @@ public class Main {
                 }
 
                 case "cd":{
-                    String newDirectory = arguments[0];
+                    // Get current working directory
+                    Path currentDir = Path.of(System.getProperty("user.dir"));
 
-                    // Storing the new directory path in a File object
-                    File directory = new File(newDirectory);
+                    // Resolve relative or absolute path correctly
+                    Path newPath = currentDir.resolve(arguments[0]).normalize();
 
                     // Check if the directory exists and is a valid directory
                     // then change the directory
-                    if(directory.exists()){
-                        String absolutePath = directory.getAbsolutePath();
-                        System.setProperty("user.dir", absolutePath);
+                    if(!Files.exists(newPath) || !Files.isDirectory(newPath)){
+                        System.out.println(command + ": " + arguments[0] + ": No such file or directory");
+                        break;
                     }
-                    else{
-                        System.out.println(command + ": " + directory + ": No such file or directory");
-                    }
+
+                    // update working directory
+                    System.setProperty("user.dir", newPath.toString());
                     break;
                 }
 
