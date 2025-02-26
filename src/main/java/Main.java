@@ -63,8 +63,9 @@ public class Main {
 
                     // Check if the directory exists and is a valid directory
                     // then change the directory
-                    if(directory.exists() && directory.isDirectory()){
-                        System.setProperty("user.dir", newDirectory);
+                    if(directory.exists()){
+                        String absolutePath = directory.getAbsolutePath();
+                        System.setProperty("user.dir", absolutePath);
                     }
                     else{
                         System.out.println(command + ": " + directory + ": No such file or directory");
