@@ -110,7 +110,7 @@ public class Main {
                                     if (inDoubleQuotes) {
                                         currentFileName.append("'"); // Preserve single quote inside double quotes
                                     } else {
-                                        inSingleQuotes = !inSingleQuotes; // Toggle single-quoted state
+                                        currentFileName.append("\\'"); // Preserve `\'` in single quotes
                                     }
                                     break;
                                 default:
@@ -168,7 +168,7 @@ public class Main {
                     }
                     System.out.println(); // Ensure new line at the end
                     break;
-                }                                                                                                                                                         
+                }                                                                                                                                                                         
 
                 case "cd":{
                     // getting the actual HOME directory
