@@ -120,11 +120,6 @@ public class Main {
                             escapeNext = false;
                             continue;
                         } else if (c == '\\') {
-                            if (inSingleQuotes) {
-                                // Inside single quotes, backslash is a literal
-                                currentFileName.append(c);
-                                continue;
-                            }
                             if (inDoubleQuotes && i + 1 < chars.length && chars[i + 1] == '\'') {
                                 // Special case: backslash followed by single quote inside double quotes.
                                 // If the current filename already ends with a single quote, skip both.
@@ -191,7 +186,7 @@ public class Main {
                     }
                     System.out.println();
                     break;
-                }                                                                                                                                                          
+                }                                                                                                                                                                         
 
                 case "cd":{
                     // getting the actual HOME directory
