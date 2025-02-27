@@ -88,87 +88,105 @@ public class Main {
                         System.out.println("cat: missing file operand");
                         break;
                     }
-                
+                    
                     List<String> fileNames = new ArrayList<>();
                     StringBuilder currentFileName = new StringBuilder();
                     boolean inSingleQuotes = false, inDoubleQuotes = false;
                     boolean escapeNext = false;
-                
-                    char[] chars = input.substring(4).trim().toCharArray(); // Extract only `cat ...`
-                
+                    
+                    String catArgs = input.substring(4).trim();
+                    char[] chars = catArgs.toCharArray();
+                    
                     for (int i = 0; i < chars.length; i++) {
                         char c = chars[i];
-                
                         if (escapeNext) {
-                            // Handle escaped sequences properly
+                            // Process escape normally
                             switch (c) {
-                                case 'n': currentFileName.append("\\n"); break; // Preserve \n as part of the filename
-                                case 't': currentFileName.append("\\t"); break; // Preserve \t as part of the filename
-                                case '\\': currentFileName.append("\\"); break;  // Preserve literal backslash
-                                case '"': currentFileName.append("\""); break;   // Preserve double quote
-                                case '\'':
-                                    if (inDoubleQuotes) {
-                                        currentFileName.append("'"); // Preserve single quote inside double quotes
-                                    } else {
-                                        currentFileName.append("\\'"); // Preserve `\'` in single quotes
-                                    }
-                                    break;
+                                case 'n': currentFileName.append("\\n"); break;
+                                case 't': currentFileName.append("\\t"); break;
+                                case '\\': currentFileName.append("\\"); break;
+                                case '"': currentFileName.append("\""); break;
+                                case '\'': currentFileName.append("'"); break;
                                 default:
-                                    if (Character.isDigit(c) && i + 2 < chars.length && Character.isDigit(chars[i + 1]) && Character.isDigit(chars[i + 2])) {
-                                        // Preserve octal sequences (\33, \37)
+                                    if (Character.isDigit(c) && i + 2 < chars.length &&
+                                        Character.isDigit(chars[i + 1]) && Character.isDigit(chars[i + 2])) {
                                         String octal = "" + c + chars[i + 1] + chars[i + 2];
-                                        currentFileName.append("\\").append(octal); // Keep it in filename format
-                                        i += 2; // Skip next two characters
+                                        currentFileName.append("\\").append(octal);
+                                        i += 2;
                                     } else {
-                                        currentFileName.append("\\").append(c); // Keep invalid escapes
+                                        currentFileName.append("\\").append(c);
                                     }
                             }
                             escapeNext = false;
+                            continue;
                         } else if (c == '\\') {
-                            escapeNext = true; // Enable escaping next character
+                            if (inDoubleQuotes && i + 1 < chars.length && chars[i + 1] == '\'') {
+                                // Special case: backslash followed by single quote inside double quotes.
+                                // If the current filename already ends with a single quote, skip both.
+                                if (currentFileName.length() > 0 && currentFileName.charAt(currentFileName.length() - 1) == '\'') {
+                                    i++; // Skip backslash and single quote.
+                                } else {
+                                    currentFileName.append('\'');
+                                    i++; // Skip the next character.
+                                }
+                                continue;
+                            } else {
+                                if (inDoubleQuotes && i + 1 < chars.length) {
+                                    char next = chars[i + 1];
+                                    if (next == '\\' || next == '$' || next == '"' || next == '\n') {
+                                        escapeNext = true;
+                                    } else {
+                                        currentFileName.append('\\');
+                                    }
+                                } else {
+                                    escapeNext = true;
+                                }
+                                continue;
+                            }
                         } else if (c == '"' && !inSingleQuotes) {
-                            inDoubleQuotes = !inDoubleQuotes; // Toggle double-quoted state
+                            inDoubleQuotes = !inDoubleQuotes;
+                            continue;
                         } else if (c == '\'' && !inDoubleQuotes) {
-                            inSingleQuotes = !inSingleQuotes; // Toggle single-quoted state
+                            inSingleQuotes = !inSingleQuotes;
+                            continue;
                         } else if (c == ' ' && !inSingleQuotes && !inDoubleQuotes) {
                             if (currentFileName.length() > 0) {
                                 fileNames.add(currentFileName.toString());
                                 currentFileName.setLength(0);
                             }
+                            continue;
                         } else {
                             currentFileName.append(c);
                         }
                     }
-                
+                    
                     if (currentFileName.length() > 0) {
                         fileNames.add(currentFileName.toString());
                     }
-                
+                    
                     if (inSingleQuotes || inDoubleQuotes) {
                         System.out.println("cat: unmatched quote error");
                         break;
                     }
-                
+                    
                     for (String fileName : fileNames) {
                         Path filePath = Path.of(fileName);
-                
                         if (!Files.exists(filePath)) {
                             System.out.println("cat: " + fileName + ": No such file or directory");
                             continue;
                         }
-                
                         try {
                             List<String> lines = Files.readAllLines(filePath);
                             for (String line : lines) {
-                                System.out.print(line + " "); // Maintain expected output format
+                                System.out.print(line + " ");
                             }
                         } catch (IOException e) {
                             System.out.println("cat: " + fileName + ": Error reading file");
                         }
                     }
-                    System.out.println(); // Ensure new line at the end
+                    System.out.println();
                     break;
-                }                                                                                                                                                                         
+                }                                                                                                                                                                                         
 
                 case "cd":{
                     // getting the actual HOME directory
