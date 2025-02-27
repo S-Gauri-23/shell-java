@@ -106,7 +106,7 @@ public class Main {
                                 case 't': currentFileName.append("\\t"); break; // Preserve \t as part of the filename
                                 case '\\': currentFileName.append("\\"); break;  // Preserve literal backslash
                                 case '"': currentFileName.append("\""); break;   // Preserve double quote
-                                case '\'': 
+                                case '\'':
                                     if (inDoubleQuotes) {
                                         currentFileName.append("'"); // Preserve single quote inside double quotes
                                     } else {
@@ -168,7 +168,7 @@ public class Main {
                     }
                     System.out.println(); // Ensure new line at the end
                     break;
-                }                                                                                                          
+                }                                                                                                                         
 
                 case "cd":{
                     // getting the actual HOME directory
