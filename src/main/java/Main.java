@@ -83,7 +83,7 @@ public class Main {
                 }
 
                 case "cat": {
-                    if (arguments.length == 0) {
+                    if (input.length() < 5) {  // If no arguments are given
                         System.out.println("cat: missing file operand");
                         break;
                     }
@@ -92,21 +92,26 @@ public class Main {
                     StringBuilder currentFileName = new StringBuilder();
                     boolean inQuotes = false;
                 
-                    // Correctly reconstruct filenames that are inside quotes
-                    for (String arg : arguments) {
-                        if (arg.startsWith("'") && !inQuotes) {
-                            inQuotes = true;
-                            currentFileName.append(arg.substring(1)).append(" "); // Remove starting quote
-                        } else if (arg.endsWith("'") && inQuotes) {
-                            inQuotes = false;
-                            currentFileName.append(arg, 0, arg.length() - 1); // Remove ending quote
-                            fileNames.add(currentFileName.toString().trim()); // Add full filename
-                            currentFileName.setLength(0); // Reset for next filename
-                        } else if (inQuotes) {
-                            currentFileName.append(arg).append(" "); // Preserve spaces
+                    // Properly reconstruct filenames with spaces
+                    char[] chars = input.substring(4).trim().toCharArray(); // Extract only `cat ...`
+                    
+                    for (int i = 0; i < chars.length; i++) {
+                        char c = chars[i];
+                
+                        if (c == '\'') {
+                            inQuotes = !inQuotes; // Toggle inside/outside quotes
+                        } else if (c == ' ' && !inQuotes) {
+                            if (currentFileName.length() > 0) {
+                                fileNames.add(currentFileName.toString());
+                                currentFileName.setLength(0);
+                            }
                         } else {
-                            fileNames.add(arg); // Normal filename without spaces
+                            currentFileName.append(c);
                         }
+                    }
+                
+                    if (currentFileName.length() > 0) {
+                        fileNames.add(currentFileName.toString());
                     }
                 
                     if (inQuotes) {
@@ -115,7 +120,7 @@ public class Main {
                     }
                 
                     for (String fileName : fileNames) {
-                        Path filePath = Path.of(fileName); // Do not append to `user.dir`, absolute paths are already correct
+                        Path filePath = Path.of(fileName); // Use full absolute path
                 
                         if (!Files.exists(filePath)) {
                             System.out.println("cat: " + fileName + ": No such file or directory");
@@ -125,7 +130,7 @@ public class Main {
                         try {
                             List<String> lines = Files.readAllLines(filePath);
                             for (String line : lines) {
-                                System.out.print(line + " "); // Ensure expected output format
+                                System.out.print(line + " "); // Maintain output format
                             }
                         } catch (IOException e) {
                             System.out.println("cat: " + fileName + ": Error reading file");
@@ -133,7 +138,7 @@ public class Main {
                     }
                     System.out.println(); // Ensure new line at the end
                     break;
-                }                
+                }                           
                 
 
                 case "cd":{
