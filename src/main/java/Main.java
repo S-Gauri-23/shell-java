@@ -100,14 +100,26 @@ public class Main {
                         char c = chars[i];
                 
                         if (escapeNext) {
-                            // Convert escape sequences to actual characters
+                            // Handle escape sequences correctly
                             switch (c) {
-                                case 'n': currentFileName.append('\n'); break;
-                                case 't': currentFileName.append('\t'); break;
-                                case '\\': currentFileName.append('\\'); break;
-                                case '"': currentFileName.append('"'); break;
-                                case '\'': currentFileName.append('\''); break;
-                                default: currentFileName.append('\\').append(c); // Preserve invalid escape sequences
+                                case 'n': currentFileName.append('\n'); break; // Newline
+                                case 't': currentFileName.append('\t'); break; // Tab
+                                case '\\': currentFileName.append('\\'); break; // Literal Backslash
+                                case '"': currentFileName.append('"'); break; // Double Quote
+                                case '\'': currentFileName.append('\''); break; // Single Quote
+                                default:
+                                    if (Character.isDigit(c) && i + 2 < chars.length && Character.isDigit(chars[i + 1]) && Character.isDigit(chars[i + 2])) {
+                                        // Convert octal sequences (e.g., \37 → ASCII 31)
+                                        String octal = "" + c + chars[i + 1] + chars[i + 2];
+                                        try {
+                                            currentFileName.append((char) Integer.parseInt(octal, 8));
+                                            i += 2; // Skip next two characters
+                                        } catch (NumberFormatException e) {
+                                            currentFileName.append('\\').append(octal); // If invalid, keep as is
+                                        }
+                                    } else {
+                                        currentFileName.append('\\').append(c); // Keep invalid escape sequences
+                                    }
                             }
                             escapeNext = false;
                         } else if (c == '\\') {
@@ -154,7 +166,7 @@ public class Main {
                     }
                     System.out.println(); // Ensure new line at the end
                     break;
-                }                                                                               
+                }                                                                                            
 
                 case "cd":{
                     // getting the actual HOME directory
