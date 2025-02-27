@@ -100,13 +100,20 @@ public class Main {
                         char c = chars[i];
                 
                         if (escapeNext) {
-                            currentFileName.append(c);
+                            // Convert escape sequences to actual characters
+                            switch (c) {
+                                case 'n': currentFileName.append('\n'); break;
+                                case 't': currentFileName.append('\t'); break;
+                                case '\\': currentFileName.append('\\'); break;
+                                case '"': currentFileName.append('"'); break;
+                                case '\'': currentFileName.append('\''); break;
+                                default: currentFileName.append('\\').append(c); // Preserve invalid escape sequences
+                            }
                             escapeNext = false;
                         } else if (c == '\\') {
                             escapeNext = true; // Enable escaping next character
                         } else if (c == '"' && !inSingleQuotes) {
                             inDoubleQuotes = !inDoubleQuotes; // Toggle double-quoted state
-                            currentFileName.append(c); // Keep quotes in filenames
                         } else if (c == '\'' && !inDoubleQuotes) {
                             inSingleQuotes = !inSingleQuotes; // Toggle single-quoted state
                         } else if (c == ' ' && !inSingleQuotes && !inDoubleQuotes) {
@@ -147,7 +154,7 @@ public class Main {
                     }
                     System.out.println(); // Ensure new line at the end
                     break;
-                }                                                               
+                }                                                                               
 
                 case "cd":{
                     // getting the actual HOME directory
