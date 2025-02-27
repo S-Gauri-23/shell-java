@@ -34,7 +34,7 @@ public class Main {
                         System.out.println(inputText.substring(1, inputText.length()-1));
                     }
                     else{
-                        String[] normalInputText = inputText.split(" ");
+                        String[] normalInputText = inputText.split("\\s+");
                         for(String st : normalInputText){
                             System.out.print(st + " ");
                         }
