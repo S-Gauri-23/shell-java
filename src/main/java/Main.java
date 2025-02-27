@@ -28,21 +28,36 @@ public class Main {
                     return;
                 }
 
-                case "echo":{
-                    String inputText = input.substring(5);
-                    if(inputText.startsWith("'") && inputText.endsWith("'")){
-                        System.out.println(inputText.substring(1, inputText.length()-1));
-                    }
-                    else{
-                        String[] normalInputText = inputText.split("\\s+");
-                        for(String st : normalInputText){
-                            System.out.print(st + " ");
+                case "echo": {
+                    String inputText = input.substring(5).trim(); // Extract text after "echo"
+                    
+                    StringBuilder result = new StringBuilder(); // Stores final output
+                    boolean inQuotes = false; // Track if inside single quotes
+                    StringBuilder currentPart = new StringBuilder(); // Stores current word or phrase
+                
+                    for (char c : inputText.toCharArray()) {
+                        if (c == '\'') {  
+                            inQuotes = !inQuotes; // Toggle between inside and outside quotes
+                        } else {
+                            if (inQuotes || c != ' ') {
+                                currentPart.append(c); // Append character to current part
+                            } else {
+                                if (currentPart.length() > 0) {
+                                    result.append(currentPart).append(" "); // Add to final output
+                                    currentPart.setLength(0); // Reset current part
+                                }
+                            }
                         }
-                        System.out.println();
                     }
+                
+                    if (currentPart.length() > 0) {
+                        result.append(currentPart);
+                    }
+                
+                    System.out.println(result.toString().trim()); // Print final result
                     break;
-                }
-
+                }                
+                
                 case "type":{
                     if(commands.contains(arguments[0])){
                         System.out.println(arguments[0] + " is a shell builtin");
@@ -126,8 +141,8 @@ public class Main {
                     break;
                 }
             }
+            }
         }
-    }
 
     private static String getPath(String parameter) {
         String pathSeparator = File.pathSeparator;
