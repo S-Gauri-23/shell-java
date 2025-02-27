@@ -100,7 +100,7 @@ public class Main {
                         char c = chars[i];
                 
                         if (escapeNext) {
-                            // Fix: Keep escaped sequences inside filenames instead of converting
+                            // Handle escaped sequences properly
                             switch (c) {
                                 case 'n': currentFileName.append("\\n"); break; // Preserve \n as part of the filename
                                 case 't': currentFileName.append("\\t"); break; // Preserve \t as part of the filename
@@ -115,7 +115,7 @@ public class Main {
                                     break;
                                 default:
                                     if (Character.isDigit(c) && i + 2 < chars.length && Character.isDigit(chars[i + 1]) && Character.isDigit(chars[i + 2])) {
-                                        // Preserve octal sequences (\37)
+                                        // Preserve octal sequences (\33, \37)
                                         String octal = "" + c + chars[i + 1] + chars[i + 2];
                                         currentFileName.append("\\").append(octal); // Keep it in filename format
                                         i += 2; // Skip next two characters
@@ -168,7 +168,7 @@ public class Main {
                     }
                     System.out.println(); // Ensure new line at the end
                     break;
-                }                                                                                                                         
+                }                                                                                                                                         
 
                 case "cd":{
                     // getting the actual HOME directory
