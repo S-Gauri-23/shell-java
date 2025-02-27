@@ -81,9 +81,34 @@ public class Main {
                     break;
                 }
 
-                case "cat":{
-                // geting each name of the file and dealing with it separately
-                    for (String fileName : arguments) {
+                case "cat": {
+                    if (arguments.length == 0) {
+                        System.out.println("cat: missing file operand");
+                        break;
+                    }
+                
+                    // Reconstruct filenames correctly to handle quotes
+                    List<String> fileNames = new ArrayList<>();
+                    StringBuilder currentFileName = new StringBuilder();
+                    boolean inQuotes = false;
+                
+                    for (String arg : arguments) {
+                        if (arg.startsWith("'") && !inQuotes) {
+                            inQuotes = true;
+                            currentFileName.append(arg.substring(1)).append(" "); // Remove leading quote
+                        } else if (arg.endsWith("'") && inQuotes) {
+                            inQuotes = false;
+                            currentFileName.append(arg, 0, arg.length() - 1); // Remove trailing quote
+                            fileNames.add(currentFileName.toString().trim()); // Add full filename
+                            currentFileName.setLength(0); // Reset
+                        } else if (inQuotes) {
+                            currentFileName.append(arg).append(" "); // Preserve spaces
+                        } else {
+                            fileNames.add(arg); // Normal filename
+                        }
+                    }
+                
+                    for (String fileName : fileNames) {
                         Path filePath = Path.of(System.getProperty("user.dir"), fileName);
                 
                         if (!Files.exists(filePath)) {
@@ -94,14 +119,16 @@ public class Main {
                         try {
                             List<String> lines = Files.readAllLines(filePath);
                             for (String line : lines) {
-                                System.out.println(line);
+                                System.out.print(line + " "); // Maintain expected output format
                             }
                         } catch (IOException e) {
                             System.out.println("cat: " + fileName + ": Error reading file");
                         }
                     }
+                    System.out.println(); // Ensure new line at the end
                     break;
                 }
+                
 
                 case "cd":{
                     // getting the actual HOME directory
