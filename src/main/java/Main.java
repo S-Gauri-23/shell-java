@@ -66,7 +66,7 @@ public class Main {
                 }
 
                 case "cat":{
-                
+                // geting each name of the file and dealing with it separately
                     for (String fileName : arguments) {
                         Path filePath = Path.of(System.getProperty("user.dir"), fileName);
                 
