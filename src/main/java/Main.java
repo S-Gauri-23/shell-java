@@ -13,7 +13,7 @@ public class Main {
         Set<String> commands = Set.of("cd", "dir", "echo", "exit", "set", "cls", "copy", "del", "move", "ren", "pause", "title", "help", "type", "pwd");
 
         while (true) {
-            System.out.print("$ ");
+            System.out.println("$ ");
             String input = scanner.nextLine();
 
             // Split input into command and arguments
