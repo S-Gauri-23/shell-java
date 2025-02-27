@@ -33,21 +33,27 @@ public class Main {
                     String inputText = input.substring(5).trim(); // Extract text after "echo"
                     
                     StringBuilder result = new StringBuilder(); // Stores final output
-                    boolean inQuotes = false; // Track if inside single quotes
-                    StringBuilder currentPart = new StringBuilder(); // Stores current word or phrase
+                    boolean inSingleQuotes = false, inDoubleQuotes = false; // Track if inside quotes
+                    boolean escapeNext = false; // Handle escape sequences
+                    StringBuilder currentPart = new StringBuilder();
                 
                     for (char c : inputText.toCharArray()) {
-                        if (c == '\'') {  
-                            inQuotes = !inQuotes; // Toggle between inside and outside quotes
-                        } else {
-                            if (inQuotes || c != ' ') {
-                                currentPart.append(c); // Append character to current part
-                            } else {
-                                if (currentPart.length() > 0) {
-                                    result.append(currentPart).append(" "); // Add to final output
-                                    currentPart.setLength(0); // Reset current part
-                                }
+                        if (escapeNext) {
+                            currentPart.append(c); // Always keep escaped characters
+                            escapeNext = false;
+                        } else if (c == '\\') {
+                            escapeNext = true; // Enable escaping next character
+                        } else if (c == '\'' && !inDoubleQuotes) {
+                            inSingleQuotes = !inSingleQuotes; // Toggle single-quoted state
+                        } else if (c == '"' && !inSingleQuotes) {
+                            inDoubleQuotes = !inDoubleQuotes; // Toggle double-quoted state
+                        } else if (c == ' ' && !inSingleQuotes && !inDoubleQuotes) {
+                            if (currentPart.length() > 0) {
+                                result.append(currentPart).append(" "); // Add to final output
+                                currentPart.setLength(0);
                             }
+                        } else {
+                            currentPart.append(c);
                         }
                     }
                 
@@ -57,7 +63,8 @@ public class Main {
                 
                     System.out.println(result.toString().trim()); // Print final result
                     break;
-                }                
+                }
+                                
                 
                 case "type":{
                     if(commands.contains(arguments[0])){
@@ -90,17 +97,22 @@ public class Main {
                 
                     List<String> fileNames = new ArrayList<>();
                     StringBuilder currentFileName = new StringBuilder();
-                    boolean inQuotes = false;
+                    boolean inSingleQuotes = false, inDoubleQuotes = false; // Track if inside quotes
+                    boolean escapeNext = false;
                 
-                    // Properly reconstruct filenames with spaces
                     char[] chars = input.substring(4).trim().toCharArray(); // Extract only `cat ...`
                     
-                    for (int i = 0; i < chars.length; i++) {
-                        char c = chars[i];
-                
-                        if (c == '\'') {
-                            inQuotes = !inQuotes; // Toggle inside/outside quotes
-                        } else if (c == ' ' && !inQuotes) {
+                    for (char c : chars) {
+                        if (escapeNext) {
+                            currentFileName.append(c);
+                            escapeNext = false;
+                        } else if (c == '\\') {
+                            escapeNext = true; // Enable escaping next character
+                        } else if (c == '\'' && !inDoubleQuotes) {
+                            inSingleQuotes = !inSingleQuotes; // Toggle single-quoted state
+                        } else if (c == '"' && !inSingleQuotes) {
+                            inDoubleQuotes = !inDoubleQuotes; // Toggle double-quoted state
+                        } else if (c == ' ' && !inSingleQuotes && !inDoubleQuotes) {
                             if (currentFileName.length() > 0) {
                                 fileNames.add(currentFileName.toString());
                                 currentFileName.setLength(0);
@@ -114,13 +126,13 @@ public class Main {
                         fileNames.add(currentFileName.toString());
                     }
                 
-                    if (inQuotes) {
-                        System.out.println("cat: unmatched single quote error");
+                    if (inSingleQuotes || inDoubleQuotes) {
+                        System.out.println("cat: unmatched quote error");
                         break;
                     }
                 
                     for (String fileName : fileNames) {
-                        Path filePath = Path.of(fileName); // Use full absolute path
+                        Path filePath = Path.of(fileName);
                 
                         if (!Files.exists(filePath)) {
                             System.out.println("cat: " + fileName + ": No such file or directory");
@@ -130,7 +142,7 @@ public class Main {
                         try {
                             List<String> lines = Files.readAllLines(filePath);
                             for (String line : lines) {
-                                System.out.print(line); // Maintain output format
+                                System.out.print(line + " "); // Maintain expected output format
                             }
                         } catch (IOException e) {
                             System.out.println("cat: " + fileName + ": Error reading file");
@@ -138,7 +150,8 @@ public class Main {
                     }
                     System.out.println(); // Ensure new line at the end
                     break;
-                }                           
+                }
+                               
                 
 
                 case "cd":{
