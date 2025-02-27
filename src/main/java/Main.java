@@ -33,6 +33,12 @@ public class Main {
                     if(inputText.startsWith("'") && inputText.endsWith("'")){
                         System.out.println(inputText.substring(1, inputText.length()-1));
                     }
+                    else{
+                        String[] normalInputText = inputText.split(" ");
+                        for(String st : normalInputText){
+                            System.out.print(st + " ");
+                        }
+                    }
                     break;
                 }
 
