@@ -168,7 +168,7 @@ public class Main {
                     }
                     System.out.println(); // Ensure new line at the end
                     break;
-                }                                                                                                                                         
+                }                                                                                                                                                         
 
                 case "cd":{
                     // getting the actual HOME directory
