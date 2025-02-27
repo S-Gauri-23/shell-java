@@ -88,29 +88,34 @@ public class Main {
                         break;
                     }
                 
-                    // Reconstruct filenames correctly to handle quotes
                     List<String> fileNames = new ArrayList<>();
                     StringBuilder currentFileName = new StringBuilder();
                     boolean inQuotes = false;
                 
+                    // Correctly reconstruct filenames that are inside quotes
                     for (String arg : arguments) {
                         if (arg.startsWith("'") && !inQuotes) {
                             inQuotes = true;
-                            currentFileName.append(arg.substring(1)).append(" "); // Remove leading quote
+                            currentFileName.append(arg.substring(1)).append(" "); // Remove starting quote
                         } else if (arg.endsWith("'") && inQuotes) {
                             inQuotes = false;
-                            currentFileName.append(arg, 0, arg.length() - 1); // Remove trailing quote
+                            currentFileName.append(arg, 0, arg.length() - 1); // Remove ending quote
                             fileNames.add(currentFileName.toString().trim()); // Add full filename
-                            currentFileName.setLength(0); // Reset
+                            currentFileName.setLength(0); // Reset for next filename
                         } else if (inQuotes) {
                             currentFileName.append(arg).append(" "); // Preserve spaces
                         } else {
-                            fileNames.add(arg); // Normal filename
+                            fileNames.add(arg); // Normal filename without spaces
                         }
                     }
                 
+                    if (inQuotes) {
+                        System.out.println("cat: unmatched single quote error");
+                        break;
+                    }
+                
                     for (String fileName : fileNames) {
-                        Path filePath = Path.of(System.getProperty("user.dir"), fileName);
+                        Path filePath = Path.of(fileName); // Do not append to `user.dir`, absolute paths are already correct
                 
                         if (!Files.exists(filePath)) {
                             System.out.println("cat: " + fileName + ": No such file or directory");
@@ -120,7 +125,7 @@ public class Main {
                         try {
                             List<String> lines = Files.readAllLines(filePath);
                             for (String line : lines) {
-                                System.out.print(line + " "); // Maintain expected output format
+                                System.out.print(line + " "); // Ensure expected output format
                             }
                         } catch (IOException e) {
                             System.out.println("cat: " + fileName + ": Error reading file");
@@ -128,7 +133,7 @@ public class Main {
                     }
                     System.out.println(); // Ensure new line at the end
                     break;
-                }
+                }                
                 
 
                 case "cd":{
